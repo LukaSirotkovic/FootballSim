@@ -16,7 +16,7 @@ async function connect() {
 connect();
 
 app.get("/api", (req, res) => {
-    res.json({ "users": ["userOne", "userTwo", "userTree"] })
+    res.json({ "users": ["userOne", "userTwo", "userTree", "userFour"] })
 })
 
 app.listen(5000, () => {
