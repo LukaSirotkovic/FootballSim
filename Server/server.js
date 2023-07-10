@@ -1,26 +1,65 @@
 const axios = require('axios');
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require('body-parser');
+const User = require("./Models/usersModel");
+const cors = require('cors');
 const app = express();
 
-const uri = "mongodb+srv://lukasirotkovic5:jfreq38322@leaguesimdb.07fh6bm.mongodb.net/?retryWrites=true&w=majority";
+app.use(cors());
 
-async function connect() {
+const uri = "mongodb+srv://lukasirotkovic5:jfreq38322@leaguesimdb.07fh6bm.mongodb.net/FootballLeagueSimDB?retryWrites=true&w=majority";
+
+app.use(bodyParser.json());
+
+
+app.get('/users', (req, res) => {
+    User.find()
+      .then((users) => {
+        res.json(users);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: 'Error retrieving users' });
+      });
+  });
+/*
+app.get("/users/:id", async (req, res) => {
     try {
-        await mongoose.connect(uri);
-        console.log("connected to MongoDb");
+
+        const user = await User.create(req.body);
+        res.status(200).json(user);
     } catch (error) {
-        concole.error(error);
+        console.log(error);
+        res.status(500).json({ message: error.message })
     }
-};
-connect();
+})*/
+app.post('/users', (req, res) => {
+    const newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    });
 
-app.get("/api", (req, res) => {
-    res.json({ "users": ["userOne", "userTwo", "userTree", "userFour"] })
-})
+    newUser.save()
+        .then((savedUser) => {
+            res.json(savedUser);
+        })
+        .catch((error) => {
+            res.status(500).json({ error: 'Error saving user' });
+        });
+});
 
-app.listen(5000, () => {
-    console.log("server started on port 5000")
-})
+mongoose.
+    connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => {
+        console.log('connected to MongoDB')
+        app.listen(5000, () => {
+            console.log(`Node API app is running on port 5000`)
 
-
+        });
+    }).catch((error) => {
+        console.log(error)
+    })

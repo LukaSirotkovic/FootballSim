@@ -1,31 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import UserForm from './pages/Register';
+import UserList from './pages/Profile';
+import { FormProvider } from 'react-hook-form';
 
 function App() {
-
-  const [backendData, setBackendData] = useState([{}]);
-
-  useEffect(() => {
-    fetch("/api").then(
-      response => response.json()
-    ).then(
-      data => {
-        setBackendData(data)
-      }
-    )
-  })
   return (
-    <div>
-      {(typeof backendData.users === "undefined") ? (
-        <p>Loading ...</p>
-      ):(
-        backendData.users.map((user, i) => (
-          <p key={i}>{user}</p>
-        ))
-      )
-
-      }
-    </div>
-  )
+    <FormProvider>
+      <UserForm />
+      <UserList />
+    </FormProvider>
+   
+  );
 }
 
 export default App;
