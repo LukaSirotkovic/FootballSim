@@ -6,9 +6,9 @@ const usersSchema = Schema(
         username: {
             type: String,
             required: true,
+            unique: true,
             validate: {
                 validator: function (value) {
-                    // Custom validation logic
                     return /^[a-zA-Z0-9]+$/.test(value);
                 },
                 message: 'Username can only contain letters and numbers'
@@ -26,6 +26,25 @@ const usersSchema = Schema(
             minlength: [6, 'Password must be at least 6 characters long'],
             maxlength: [20, 'Password cannot exceed 20 characters']
         },
+        confirmPassword: {
+            type: String,
+            required: true,
+            validate: {
+                validator: function (value) {
+                  return value === this.password;
+                },
+                message: 'Confirm password must match the password',
+              },
+        },
+        privacy: {
+            type: Boolean,
+            required: [true, 'Privacy field must be checked'],
+            
+        },
+        brackets: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Bracket'
+          }]
     },
     {
         timestamps: true

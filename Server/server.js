@@ -1,65 +1,33 @@
+require("dotenv").config();
 const axios = require('axios');
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
-const User = require("./Models/usersModel");
 const cors = require('cors');
+const userRoute = require("./Routes/usersRoute")
+
 const app = express();
+
+const PORT = process.env.PORT || 5000;
+const MONGO_URL = process.env.MONGO_URL;
 
 app.use(cors());
 
-const uri = "mongodb+srv://lukasirotkovic5:jfreq38322@leaguesimdb.07fh6bm.mongodb.net/FootballLeagueSimDB?retryWrites=true&w=majority";
-
 app.use(bodyParser.json());
 
-
-app.get('/users', (req, res) => {
-    User.find()
-      .then((users) => {
-        res.json(users);
-      })
-      .catch((error) => {
-        res.status(500).json({ error: 'Error retrieving users' });
-      });
-  });
-/*
-app.get("/users/:id", async (req, res) => {
-    try {
-
-        const user = await User.create(req.body);
-        res.status(200).json(user);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message })
-    }
-})*/
-app.post('/users', (req, res) => {
-    const newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    });
-
-    newUser.save()
-        .then((savedUser) => {
-            res.json(savedUser);
-        })
-        .catch((error) => {
-            res.status(500).json({ error: 'Error saving user' });
-        });
-});
+app.use("/api/users", userRoute);
 
 mongoose.
-    connect(uri, {
+    connect(MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
     .then(() => {
         console.log('connected to MongoDB')
-        app.listen(5000, () => {
-            console.log(`Node API app is running on port 5000`)
+        app.listen(PORT, () => {
+            console.log(`Node API app is running on port ${PORT}`)
 
         });
     }).catch((error) => {
-        console.log(error)
+        console.log(error, "Server error")
     })
