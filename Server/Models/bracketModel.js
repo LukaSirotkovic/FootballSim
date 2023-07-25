@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const bracketSchema = new Schema({
-    name: {
+    title: {
         type: String,
         required: true
     },
-    user: {
+    user_id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -23,6 +23,9 @@ const bracketSchema = new Schema({
             default: 'Draw'
         }
     }]
+},
+{
+    timestamps: true
 });
 
 const Bracket = mongoose.model('Bracket', bracketSchema);

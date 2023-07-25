@@ -23,12 +23,10 @@ const usersSchema = Schema(
         password: {
             type: String,
             required: true,
-            minlength: [6, 'Password must be at least 6 characters long'],
-            maxlength: [20, 'Password cannot exceed 20 characters']
+            minlength: [6, 'Password must be at least 6 characters long']
         },
         confirmPassword: {
             type: String,
-            required: true,
             validate: {
                 validator: function (value) {
                   return value === this.password;

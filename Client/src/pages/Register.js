@@ -32,7 +32,7 @@ const RegisterForm = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post("/api/users", data);
+            const response = await axios.post("http://localhost:5000/api/users", data);
             console.log("User added:", response.data);
             reset();
         } catch (error) {

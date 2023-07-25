@@ -1,37 +1,40 @@
-const User = require("../Models/usersModel")
-
+const User = require("../Models/usersModel");
+const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find().select('username email');
+        // Exclude the 'password' field from the query results
+        const users = await User.find().select('username email -_id');
         res.json(users);
-      } catch (error) {
+    } catch (error) {
         res.status(500).json({ error: 'Error retrieving users' });
-      }
+    }
 };
 
 const createUser = async (req, res) => {
-    const { username, email, password, confirmPassword, privacy } = req.body;
+    const { username, email, password, privacy } = req.body;
+    try {
+        // Generate a salt and hash the password
 
+        bcrypt.genSalt(10, function (err, salt) {
+            bcrypt.hash(password, salt, async function (err, hash) {
+                // Create a new User instance with the hashed password
+                const newUser = new User({
+                    username: username,
+                    email: email,
+                    password: hash, // Store the hashed password in the 'password' field
+                    privacy: privacy
+                });
 
-    const newUser = new User({
-        username: username,
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-        privacy: privacy
-    });
-
-    newUser.save()
-        .then((savedUser) => {
-            res.json(savedUser);
+                // Save the user to the database
+                const savedUser = await newUser.save();
+                res.json(savedUser);
+            })
         })
-        .catch((error) => {
-            res.status(500).json({ error: 'Error saving user' });
-        });
 
-
-
+    } catch (error) {
+        res.status(500).json({ error: 'Error creating user' });
+    }
 };
 
 module.exports = {
