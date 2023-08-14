@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const getUsers = async (req, res) => {
     try {
         // Exclude the 'password' field from the query results
-        const users = await User.find().select('username email -_id');
+        const users = await User.find().select('username email _id');
         res.json(users);
     } catch (error) {
         res.status(500).json({ error: 'Error retrieving users' });
@@ -37,7 +37,21 @@ const createUser = async (req, res) => {
     }
 };
 
+const checkUser = async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+      const user = await User.findOne({ $or: [{ username }, { email }] });
+      if (!user || user.password !== password) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+      return res.json({ user });
+    } catch (error) {
+      return res.status(500).json({ error: 'An error occurred' });
+    }
+  }
+
 module.exports = {
     createUser,
-    getUsers
+    getUsers,
+    checkUser
 }

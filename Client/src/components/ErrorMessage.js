@@ -1,20 +1,20 @@
-import { Box, Typography } from "@mui/material"
-import ErrorIcon from '@mui/icons-material/Error'
+import { Box, Text } from "@chakra-ui/react";
+import { WarningIcon } from "@chakra-ui/icons";
 
-const ErrorMessage = ({message}) => {
+const ErrorMessage = ({ message }) => {
   return (
-    <Box sx={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '5px',
-      mt: '6px'
-    }}>
-      <ErrorIcon color="error" sx={{width: '20px'}} />
-      <Typography color='error.main' variant='span' fontSize='14px'>
-        {message}
-      </Typography>
+    <Box
+      display="flex"
+      alignItems="center"
+      gap="5px"
+      mt="10px"
+      color="red.500"
+      fontSize="14px"
+    >
+      {message && <WarningIcon color="red.500" boxSize={4} />}
+      <Text>{message}</Text>
     </Box>
-  )
-}
+  );
+};
 
-export default ErrorMessage
+export default ErrorMessage;
