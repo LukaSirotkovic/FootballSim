@@ -1,5 +1,3 @@
-'use client'
-
 import {
   Button,
   Flex,
@@ -14,21 +12,30 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate} from 'react-router-dom';
 export default function LogIn() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/api/users/login', {
+      const response = await axios.post('/api/users/login', {
         username: username,
         password: password,
       });
-      setUser(response.data.user);
+
+      const token = response.data.token;
+
+      // Save the token to localStorage
+      localStorage.setItem('token', token);
+
+      // Redirect the user to the profile page or another authenticated route
+      navigate("/profile");
+
       setError(null);
     } catch (error) {
       setError('Invalid credentials');

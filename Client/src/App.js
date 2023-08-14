@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import NavigationBar from './components/NavigationBar';
 import Home from './pages/Home';
@@ -6,24 +6,15 @@ import Clubs from './pages/Clubs';
 import LogIn from './pages/LogIn';
 import UserList from './pages/Profile';
 import Register from './pages/Register';
-
+import { createContext, useContext } from 'react';
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Function to handle login (you can implement this based on your authentication logic)
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
 
-  // Function to handle logout (you can implement this based on your authentication logic)
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
   return (
     <>
-      <NavigationBar isLoggedIn={false} />
+      <NavigationBar />
 
       <Routes>
         <Route exact path="/home" element={<Home />} />

@@ -1,32 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/authContext';
 
-function UserList() {
-  const [users, setUsers] = useState([]);
+
+const Profile = () => {
+
+  const { user, login, loadingUser } = useAuth();
 
   useEffect(() => {
-    axios.get('/api/users')
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error('Error retrieving users:', error);
-      });
+    // Fetch user data using the stored token
+    const token = localStorage.getItem('token');
+    if (token) {
+      login(token)
+    }
   }, []);
 
-  
+  if (loadingUser) {
+    return <p>Loading...</p>;
+  }
+
+  if (!user) {
+    return <p>Error loading user data.</p>;
+  }
+
   return (
     <div>
-      <h1>User List</h1>
-      {users.map((user) => (
-        <div key={user._id}>
-          <p>Username: {user.username}</p>
-          <p>Email: {user.email}</p>
-          <hr />
-        </div>
-      ))}
+      <h1>Welcome, {user.username}!</h1>
+      <p>Email: {user.email}</p>
     </div>
   );
-}
+};
 
-export default UserList;
+export default Profile;

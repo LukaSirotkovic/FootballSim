@@ -22,6 +22,7 @@ import {
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
+import { useAuth } from '../context/authContext';
 
 const Links = ['Home', 'Clubs'];
 
@@ -56,10 +57,12 @@ const CustomLink = ({ to, children, ...props }) => {
   );
 };
 
-export default function NavigationBar({ isLoggedIn }) {
+export default function NavigationBar() {
 
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { user, signOut, login, loadingUser } = useAuth();
 
   const hoverBgColor = useColorModeValue('blue.200', 'blue.900');
 
@@ -109,7 +112,7 @@ export default function NavigationBar({ isLoggedIn }) {
               >
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
-              {!isLoggedIn ? (
+              {!user ? (
                 <Button
                   as={'a'}
                   mt={1}
@@ -119,7 +122,7 @@ export default function NavigationBar({ isLoggedIn }) {
                   display={{ base: 'inline-flex' }}
                   color={'black'}
                   bg={'yellow.300'}
-                  href={'/logIn'}
+                  href={'/login'}
                   _hover={{
                     bg: 'yellow.400',
                     color: 'white',
@@ -152,7 +155,7 @@ export default function NavigationBar({ isLoggedIn }) {
                     </Center>
                     <br />
                     <Center>
-                      <p>Username</p>
+                      <p>{user.username}</p>
                     </Center>
                     <br />
                     <MenuDivider />
@@ -160,7 +163,7 @@ export default function NavigationBar({ isLoggedIn }) {
                     <MenuItem>
                       <Link to="/profile">Profile</Link>
                     </MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={signOut}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
               )}

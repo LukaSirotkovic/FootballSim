@@ -1,6 +1,7 @@
 const User = require("../Models/usersModel");
 const bcrypt = require("bcrypt");
-
+const jwt = require('jsonwebtoken');
+const secretKey = 'aasdnvanvčlndsnvoasvfnaosvnc123141adp123ed';
 const getUsers = async (req, res) => {
     try {
         // Exclude the 'password' field from the query results
@@ -37,21 +38,49 @@ const createUser = async (req, res) => {
     }
 };
 
-const checkUser = async (req, res) => {
-    const { username, email, password } = req.body;
+const validateLogIn = async (req, res) => {
+    const { username, password } = req.body;
     try {
-      const user = await User.findOne({ $or: [{ username }, { email }] });
-      if (!user || user.password !== password) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-      return res.json({ user });
-    } catch (error) {
-      return res.status(500).json({ error: 'An error occurred' });
-    }
-  }
+        const user = await User.findOne({ username: username });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
 
+        res.json({ token });
+
+    } catch (error) {
+        return res.status(500).json({ error: 'An error occurred' });
+    }
+}
+
+const returnUser = async (req, res) => {
+    const token = req.header("Authorization");
+
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    try {
+        const tokenResult = token.slice(7)
+        const decodedToken = jwt.verify(tokenResult, secretKey);
+        const userId = decodedToken.userId;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ username: user.username, email: user.email, message: " Welcome to your profile" });
+        
+    } catch (error) {
+        return res.status(401).json({ message: "Invalid token" })
+    }
+}
 module.exports = {
     createUser,
     getUsers,
-    checkUser
+    validateLogIn,
+    returnUser
 }
