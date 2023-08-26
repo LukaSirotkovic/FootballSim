@@ -18,13 +18,14 @@ import {
   Center,
   IconButton,
   HStack,
+  TagRightIcon,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
-const Links = ['Home', 'Clubs'];
+const Links = ['Bracket', 'Clubs'];
 
 const SyleLink = (props) => {
   const { children } = props;
@@ -65,6 +66,7 @@ export default function NavigationBar() {
   const { user, signOut, login, loadingUser } = useAuth();
 
   const hoverBgColor = useColorModeValue('blue.200', 'blue.900');
+
 
   return (
     <>
@@ -112,7 +114,7 @@ export default function NavigationBar() {
               >
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
-              {!user ? (
+              {!user && !loadingUser ? (
                 <Button
                   as={'a'}
                   mt={1}
@@ -142,7 +144,7 @@ export default function NavigationBar() {
                   >
                     <Avatar
                       size={'sm'}
-                      src={'https://avatars.dicebear.com/api/male/username.svg'}
+                      src={user?.avatar}
                     />
                   </MenuButton>
                   <MenuList alignItems={'center'}>
@@ -150,12 +152,13 @@ export default function NavigationBar() {
                     <Center>
                       <Avatar
                         size={'2xl'}
-                        src={'https://avatars.dicebear.com/api/male/username.svg'}
+                        src={user?.avatar}
                       />
                     </Center>
                     <br />
                     <Center>
-                      <p>{user.username}</p>
+                      
+                      <p>{user?.username}</p>
                     </Center>
                     <br />
                     <MenuDivider />

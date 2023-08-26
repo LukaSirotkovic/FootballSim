@@ -3,6 +3,7 @@ const { Schema, ObjectId } = mongoose;
 
 const usersSchema = Schema(
     {
+        
         username: {
             type: String,
             required: true,
@@ -29,20 +30,23 @@ const usersSchema = Schema(
             type: String,
             validate: {
                 validator: function (value) {
-                  return value === this.password;
+                    return value === this.password;
                 },
                 message: 'Confirm password must match the password',
-              },
+            },
         },
         privacy: {
             type: Boolean,
             required: [true, 'Privacy field must be checked'],
-            
+
+        },
+        avatar: {
+            type: String,
         },
         brackets: [{
             type: Schema.Types.ObjectId,
             ref: 'Bracket'
-          }]
+        }]
     },
     {
         timestamps: true

@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useAuth } from '../context/authContext';
-
+import {
+  Container,
+  Heading,
+  VStack,
+  HStack,
+  Avatar,
+  Box,
+  Button,
+  useColorModeValue,
+  Divider
+} from '@chakra-ui/react';
+import SettingsContent from '../components/SettingsContent'; // Create this component
+import BracketsContent from '../components/BracketsContent';
 
 const Profile = () => {
+  const { user, login, signOut, loadingUser } = useAuth();
+  const [selectedAvatar, setSelectedAvatar] = useState(0);
+  const [avatarOptions, setAvatarOptions] = useState([]);
+  const [activeSection, setActiveSection] = useState('settings');
 
-  const { user, login, loadingUser } = useAuth();
+  const boxBgColor = useColorModeValue('blue.400', 'blue.900');
+  const textColor = useColorModeValue('black', 'white');
 
   useEffect(() => {
-    // Fetch user data using the stored token
     const token = localStorage.getItem('token');
     if (token) {
-      login(token)
+      login(token);
     }
   }, []);
 
@@ -24,10 +39,52 @@ const Profile = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome, {user.username}!</h1>
-      <p>Email: {user.email}</p>
-    </div>
+
+    <HStack spacing="0" justify="center" >
+      <Box
+        alignItems="top"
+        h="calc(100vh - 68px)"
+        color={textColor}
+        bg={boxBgColor}
+        p="4" 
+        w={150}
+        display="flex"
+        flexDirection="column"
+
+      >
+        <VStack align="start" spacing="4" color={textColor}>
+          <HStack gap='7' mb='10px'>
+
+            <Avatar size="sm" name="User" src={user.avatar} />
+            <Heading as='h3' size='sm' color={textColor}>{user.username}</Heading>
+          </HStack>
+          <Divider bg={textColor}/>
+          <Button
+            color={textColor}
+            variant="link"
+            onClick={() => setActiveSection('settings')}
+          >
+            Settings
+          </Button>
+          <Button
+            color={textColor}
+            variant="link"
+            onClick={() => setActiveSection('brackets')}
+          >
+            Brackets
+          </Button>
+          <Button
+            color={textColor}
+            variant="link"
+            onClick={signOut}
+          >
+            Logout
+          </Button>
+        </VStack>
+      </Box>
+      {activeSection === "settings" ? (<SettingsContent />) : (<BracketsContent />)}
+
+    </HStack >
   );
 };
 

@@ -7,12 +7,11 @@ const matchSchema = new Schema({
   },
   teamA: {
     type: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
-    required: true
+    required: true,
   },
   teamB: {
     type: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
-
-    required: true
+    required: true,
   },
   status: {
     type: String,

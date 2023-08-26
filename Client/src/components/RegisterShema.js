@@ -11,7 +11,7 @@ import {
     Text,
     useColorModeValue,
 } from "@chakra-ui/react";
-import { LockIcon } from '@chakra-ui/icons'; 
+import { LockIcon } from '@chakra-ui/icons';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -19,7 +19,7 @@ import { pawdRegExp } from "../utils";
 import axios from 'axios';
 import CheckboxFields from './CheckboxFields'
 import ErrorMessage from './ErrorMessage';
-
+import { useNavigate } from 'react-router-dom';
 // create schema validation
 const schema = yup.object({
     username: yup.string().required('Full Name is required'),
@@ -31,6 +31,7 @@ const schema = yup.object({
 
 const RegisterForm = () => {
 
+    const navigate = useNavigate();
     const formBgColor = useColorModeValue('gray.200', 'gray.700');
 
     const { register, handleSubmit, reset, formState: { errors, isSubmitting }, control } = useForm({
@@ -49,12 +50,15 @@ const RegisterForm = () => {
             const response = await axios.post("/api/users", data);
             console.log("User added:", response.data);
             reset();
+            navigate("/login");
         } catch (error) {
             if (error.response && error.response.status === 400) {
 
                 const errorMessage = "Username or email are already in use. Please try again.";
                 yup.reach(schema, error.response.data.error.field).validate(null, { abortEarly: false }).catch(err => {
                     throw new yup.ValidationError(errorMessage, null, error.response.data.error.field);
+
+
                 });
             } else {
                 console.error("Error adding user:", error);
@@ -92,7 +96,7 @@ const RegisterForm = () => {
                                 type="text"
                                 {...register('email')}
                             />
-                             <ErrorMessage message={errors.email?.message} />
+                            <ErrorMessage message={errors.email?.message} />
                         </FormControl>
 
                         <FormControl isInvalid={errors.password}>
@@ -109,11 +113,11 @@ const RegisterForm = () => {
                                 type="password"
                                 {...register('confirmPassword')}
                             />
-                             <ErrorMessage message={errors.confirmPassword?.message} />
+                            <ErrorMessage message={errors.confirmPassword?.message} />
                         </FormControl>
 
                         <FormControl isInvalid={errors.privacy}>
-                            <CheckboxFields name='privacy' errors={errors} control={control}  />
+                            <CheckboxFields name='privacy' errors={errors} control={control} />
                         </FormControl>
 
                         <Button
@@ -135,50 +139,50 @@ const RegisterForm = () => {
 export default RegisterForm;
 
 
-    /*
-        return (
+/*
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '100vh',
+            }}
+        >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <HowToRegIcon />
+            </Avatar>
+            <Typography component='h1'>Sign up</Typography>
+ 
+            
             <Box
+                component='form'
+                noValidate
+                onSubmit={handleSubmit(onSubmit)}
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '100vh',
+                    width: 500,
+                    mt: '2rem',
+                    p: '2rem',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
                 }}
             >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <HowToRegIcon />
-                </Avatar>
-                <Typography component='h1'>Sign up</Typography>
-    
-                
-                <Box
-                    component='form'
-                    noValidate
-                    onSubmit={handleSubmit(onSubmit)}
-                    sx={{
-                        width: 500,
-                        mt: '2rem',
-                        p: '2rem',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
+                <TextFields errors={errors} control={control} name='username' label='Username' />
+                <TextFields errors={errors} control={control} name='email' label='Email' />
+                <TextFields errors={errors} control={control} name='password' label='Password' />
+                <TextFields errors={errors} control={control} name='confirmPassword' label='Confirm Password' />
+                <CheckboxFields errors={errors} control={control} name='privacy' />
+ 
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
                 >
-                    <TextFields errors={errors} control={control} name='username' label='Username' />
-                    <TextFields errors={errors} control={control} name='email' label='Email' />
-                    <TextFields errors={errors} control={control} name='password' label='Password' />
-                    <TextFields errors={errors} control={control} name='confirmPassword' label='Confirm Password' />
-                    <CheckboxFields errors={errors} control={control} name='privacy' />
-    
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        Sign up
-                    </Button>
-                </Box>
+                    Sign up
+                </Button>
             </Box>
-        );
-    }*/
+        </Box>
+    );
+}*/

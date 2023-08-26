@@ -1,16 +1,8 @@
 const User = require("../Models/usersModel");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-const secretKey = 'aasdnvanvčlndsnvoasvfnaosvnc123141adp123ed';
-const getUsers = async (req, res) => {
-    try {
-        // Exclude the 'password' field from the query results
-        const users = await User.find().select('username email _id');
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ error: 'Error retrieving users' });
-    }
-};
+const secretKey = process.env.SECRET_KEY
+
 
 const createUser = async (req, res) => {
     const { username, email, password, privacy } = req.body;
@@ -24,7 +16,8 @@ const createUser = async (req, res) => {
                     username: username,
                     email: email,
                     password: hash, // Store the hashed password in the 'password' field
-                    privacy: privacy
+                    privacy: privacy,
+                    avatar: 'https://api.dicebear.com/6.x/miniavs/svg?seed=Abby&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4'
                 });
 
                 // Save the user to the database
@@ -72,15 +65,45 @@ const returnUser = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.json({ username: user.username, email: user.email, message: " Welcome to your profile" });
-        
+        res.json(user);
+
     } catch (error) {
         return res.status(401).json({ message: "Invalid token" })
     }
 }
+const deleteAccount = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await User.deleteOne({ _id: id });
+        res.json({ success: true, message: 'Account deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+
+}
+const updateAccount = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await User.updateOne({ _id: id }, {
+            $set: {
+                avatar: req.body.avatar,
+
+            }
+        });
+        res.send({ status: "Ok", data: "Updated" });
+    } catch (error) {
+        console.error('Error updating account:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+}
+
 module.exports = {
     createUser,
-    getUsers,
     validateLogIn,
-    returnUser
+    returnUser,
+    updateAccount,
+    deleteAccount,
 }
