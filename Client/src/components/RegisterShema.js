@@ -10,6 +10,7 @@ import {
     Stack,
     Text,
     useColorModeValue,
+    useToast
 } from "@chakra-ui/react";
 import { LockIcon } from '@chakra-ui/icons';
 import { useForm } from "react-hook-form";
@@ -33,6 +34,7 @@ const RegisterForm = () => {
 
     const navigate = useNavigate();
     const formBgColor = useColorModeValue('gray.200', 'gray.700');
+    const toast = useToast();
 
     const { register, handleSubmit, reset, formState: { errors, isSubmitting }, control } = useForm({
         defaultValues: {
@@ -51,6 +53,15 @@ const RegisterForm = () => {
             console.log("User added:", response.data);
             reset();
             navigate("/login");
+            
+            toast({
+                title: "Registration Successful",
+                description: "You have successfully registered.",
+                status: "success",
+                duration: 5000, // How long the toast should be displayed (in milliseconds)
+                isClosable: true, // Whether the user can close the toast manually
+            });
+
         } catch (error) {
             if (error.response && error.response.status === 400) {
 

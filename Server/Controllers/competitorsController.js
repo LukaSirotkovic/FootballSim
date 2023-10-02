@@ -36,8 +36,11 @@ const getClubInfo = async (req, res) => {
     }
 }
 
+
+
 module.exports = {
     getCompetitors,
     postCompetitors,
     getClubInfo,
+    
 }

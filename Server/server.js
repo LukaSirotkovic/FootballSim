@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const userRoute = require("./Routes/usersRoute");
 const competitorsRoute = require("./Routes/competitorsRoute");
+const playerRoute = require("./Routes/playerRoute");
+const bracketRoute = require("./Routes/bracketRoute");
 
 const app = express();
 
@@ -16,6 +18,8 @@ app.use(bodyParser.json());
 
 app.use('/api/users', userRoute); // Use single quotes consistently
 app.use('/api/competitors', competitorsRoute); // Use single quotes consistently
+app.use('/api/players', playerRoute);
+app.use('/api/bracket', bracketRoute);
 
 mongoose
     .connect(MONGO_URL, {

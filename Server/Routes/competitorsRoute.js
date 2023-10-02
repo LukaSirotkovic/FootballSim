@@ -8,4 +8,5 @@ router.post("/", postCompetitors);
 
 router.get('/:id', getClubInfo);
 
+
 module.exports = router;

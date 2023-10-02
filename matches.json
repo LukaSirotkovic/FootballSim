@@ -1,0 +1,30 @@
+{
+    "competition":"",
+    "rounds": {
+        "first": {
+            "teams": [],
+            "winners": [],
+            "isComplete": false
+        },
+        "second": {
+            "teams": [],
+            "winners": [],
+            "isComplete": false
+        },
+        "third": {
+            "teams": [],
+            "winners": [],
+            "isComplete": false
+        },
+        "fourth": {
+            "teams": [],
+            "winners": [],
+            "isComplete": false
+        },
+        "fifth": {
+            "teams": [],
+            "winners": [],
+            "isComplete": false
+        }
+    }
+}

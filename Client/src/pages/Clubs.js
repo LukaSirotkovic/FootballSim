@@ -26,7 +26,6 @@ function Clubs() {
 
         setClubs(teams);
         setCompetitionName(competition);
-        console.log(teams)
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -45,12 +44,12 @@ function Clubs() {
   return (
     <Box alignItems='center'>
       <Heading m={5}>
-        <Center>
+        <Center fontSize={['sm', 'md', 'lg', 'xl', '2xl']}>
           {competitionName}
         </Center>
       </Heading>
 
-      <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={4} m='10px'>
+      <Grid templateColumns={['1fr', '1fr 1fr', '1fr 1fr 1fr 1fr']} gap={4} m='10px'>
 
         {clubs.map((club) => (
           <GridItem key={club.id}>
@@ -65,11 +64,11 @@ function Clubs() {
                   boxShadow: 'lg',
                   transform: 'translateY(-5px)',
                 }}
-                h="200px" // Set a fixed height for the box
+                h="210px" // Set a fixed height for the box
                 overflow="hidden" // Hide overflow content
               >
                 <Image src={club.crest} alt={club.name} h="120px" mx="auto" />
-                <Text mt={2} textAlign="center" fontWeight="bold" noOfLines={2} textOverflow="ellipsis">
+                <Text fontSize={['sm', 'md', 'lg',]} mt={2} textAlign="center" fontWeight="bold" noOfLines={2} textOverflow="ellipsis">
                   {club.name}
                 </Text>
               </Box>
@@ -82,3 +81,4 @@ function Clubs() {
 }
 
 export default Clubs;
+

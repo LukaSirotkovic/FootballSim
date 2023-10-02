@@ -162,7 +162,6 @@ export default function NavigationBar() {
                     </Center>
                     <br />
                     <MenuDivider />
-                    <MenuItem>Your Brackets</MenuItem>
                     <MenuItem>
                       <Link to="/profile">Profile</Link>
                     </MenuItem>

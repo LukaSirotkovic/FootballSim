@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/authContext';
-import { Container, VStack, Box, Button, Heading, Select, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Heading, Select, useColorModeValue, VStack } from '@chakra-ui/react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const BracketsContent = () => {
+    const navigate = useNavigate();
     const { user } = useAuth();
     const [selectedBracket, setSelectedBracket] = useState('');
-    const [bracketOptions, setBracketOptions] = useState(user.brackets || []);
-
+    const [bracketOptions, setBracketOptions] = useState([]);
     const boxBgColor = useColorModeValue('blue.200', 'blue.700');
     const textColor = useColorModeValue('black', 'white');
 
@@ -14,13 +16,44 @@ const BracketsContent = () => {
         setSelectedBracket(event.target.value);
     };
 
-    const handleSaveChanges = async () => {
-        // Handle saving changes to the selected bracket
-        console.log('Selected bracket:', selectedBracket);
+
+
+    const fetchBrackets = async () => {
+        try {
+            // Replace 'userId' with the actual user ID or criteria
+            const userId = user._id;
+
+            // Make a GET request to retrieve brackets associated with the user
+            const response = await axios.get(`/api/bracket/getBracket/${userId}`);
+
+            if (response.status === 200) {
+                const { brackets } = response.data;
+
+                // Set the retrieved brackets as options
+
+                setBracketOptions(brackets);
+            } else {
+                // Handle the error if the request fails
+                console.error('Failed to retrieve brackets');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle network or other errors
+        }
     };
 
-    return (
+    useEffect(() => {
+        // Call fetchBrackets when the component mounts or when user data is available
+        if (user) {
+            fetchBrackets();
+        }
+    }, [user]);
 
+    const editBracket = (selectedBracketId) => {
+        navigate("/bracket/" + selectedBracketId);     
+    }
+
+    return (
         <Box
             w='700px'
             color={textColor}
@@ -41,20 +74,14 @@ const BracketsContent = () => {
                     onChange={handleBracketChange}
                 >
                     {bracketOptions.map((bracket, index) => (
-                        <option key={index} value={bracket}>
-                            Bracket {index + 1}
+                        <option key={index} value={bracket._id}>
+                            {bracket.bracketName}
                         </option>
                     ))}
                 </Select>
 
-                {/* Display the selected bracket's content here */}
-                {/* For example, you could use a separate component */}
-                {/* to render the bracket visualization */}
-
-                <Button onClick={handleSaveChanges}>Save Changes</Button>
+                <Button onClick={() => { editBracket(selectedBracket) }}>Edit</Button>
             </VStack>
-
-
         </Box>
     );
 };

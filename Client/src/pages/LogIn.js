@@ -8,7 +8,8 @@ import {
   Input,
   Stack,
   Image,
-  Link
+  Link,
+  useToast
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -20,6 +21,7 @@ export default function LogIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleLogin = async () => {
     try {
@@ -32,6 +34,14 @@ export default function LogIn() {
 
       // Save the token to localStorage
       localStorage.setItem('token', token);
+
+      toast({
+        title: 'Sign In Successful',
+        description: 'You have successfully signed in.',
+        status: 'success',
+        duration: 5000, // How long the toast should be displayed (in milliseconds)
+        isClosable: true, // Whether the user can close the toast manually
+    });
 
       // Redirect the user to the profile page or another authenticated route
       navigate("/profile");

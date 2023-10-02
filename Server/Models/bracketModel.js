@@ -1,33 +1,39 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
-const bracketSchema = new Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    user_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    matches: [{
-        match: {
-            type: Schema.Types.ObjectId,
-            ref: 'Match',
-            required: true
-        },
-        winner: {
-            type: String,
-            enum: ['Team A', 'Team B', 'Draw'],
-            default: 'Draw'
-        }
-    }]
-},
-{
-    timestamps: true
+// Define the schema for a single participant in a match
+const participantSchema = new mongoose.Schema({
+  id: Number,
+  isWinner: Boolean,
+  name: String,
+  picture: String,
+  resultText: String,
+  status: String,
 });
 
-const Bracket = mongoose.model('Bracket', bracketSchema);
+// Define the schema for a single match
+const matchSchema = new mongoose.Schema({
+  id: Number,
+  name: String,
+  nextMatchId: Number,
+  participants: [participantSchema],
+  startTime: Date,
+  state: String,
+  tournamentRoundText: String,
+});
+
+// Define the schema for your bracket
+const bracketSchema = new mongoose.Schema({
+  bracketName: {
+    type: String,
+  },
+  allMatches: [matchSchema],
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+});
+
+// Create the Bracket model based on the schema
+const Bracket = mongoose.model('Bracket', bracketSchema, "Brackets");
 
 module.exports = Bracket;

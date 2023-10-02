@@ -6,7 +6,7 @@ import LogIn from './pages/LogIn';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import ClubDetails from './pages/ClubDetails';
-import FootballBracket from './pages/Bracket';
+import Bracket from './pages/Bracket';
 
 function App() {
 
@@ -15,7 +15,8 @@ function App() {
       <NavigationBar />
 
       <Routes>
-        <Route exact path="/bracket" element={<FootballBracket />} />
+        <Route path="/bracket/:id" element={<Bracket />} />
+        <Route path="/bracket" element={<Bracket />} />
         <Route path="/clubs" element={<Clubs />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/profile" element={<Profile />} />
